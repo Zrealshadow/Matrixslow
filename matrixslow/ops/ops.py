@@ -101,3 +101,13 @@ class MatMul(Operator):
         """
     
     
+class Add(Operator):
+    """ Add operation of a list of matrix
+    """
+
+    def compute(self):
+        self.value = np.mat(np.zeros(self.parents[0].shape()))
+        for parent in self.parents:
+            self.value += parent.value
+    def get_jacobi(self, parent: 'Node'):
+        return super().get_jacobi(parent)
