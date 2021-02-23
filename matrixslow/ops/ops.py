@@ -109,5 +109,6 @@ class Add(Operator):
         self.value = np.mat(np.zeros(self.parents[0].shape()))
         for parent in self.parents:
             self.value += parent.value
+
     def get_jacobi(self, parent: 'Node'):
-        return super().get_jacobi(parent)
+        return np.mat(np.eye(self.dimension()))

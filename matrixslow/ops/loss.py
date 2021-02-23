@@ -13,7 +13,9 @@ class LossFunction(Node):
 
 
 class PerceptionLoss(LossFunction):
-    """
+    """Perception Loss Function
+    if x > 0 else loss += 0 
+    if x <= 0  else loss += -x
     """
 
     def compute(self):
