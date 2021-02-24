@@ -65,7 +65,7 @@ for epoch in range(50):
         """update the parameter's value 
         Using Gradient Descent
         """
-
+        # import pdb;pdb.set_trace()
         w.set_value(w.value - learning_rate * w.jacobi.T.reshape(w.shape()))
         b.set_value(b.value - learning_rate * b.jacobi.T.reshape(b.shape()))
 
