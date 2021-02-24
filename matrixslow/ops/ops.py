@@ -112,3 +112,18 @@ class Add(Operator):
 
     def get_jacobi(self, parent: 'Node'):
         return np.mat(np.eye(self.dimension()))
+
+
+
+class Step(Operator):
+    """Step Function
+    if x > 0 return 1
+    else return 0
+    """
+
+    def compute(self):
+        self.value = np.mat(np.where(self.parents[0].value >= 0.0 , 1.0, 0.0))
+    
+    def get_children(self):
+        return super().get_children()
+
