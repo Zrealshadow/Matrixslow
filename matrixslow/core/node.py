@@ -9,7 +9,7 @@
 import numpy as np
 from abc import abstractmethod
 from  numpy.matrixlib.defmatrix import matrix as npmat
-from .graph import default_graph
+from matrixslow.core.graph import default_graph
 
 class Node(object):
     """Node in computing graph
@@ -27,6 +27,7 @@ class Node(object):
         self.children = []
         self.value = None
         self.jacobi = None
+
         for parent in self.parents:
             parent.children.append(self)
         self.graph.add_node(self) 
@@ -42,7 +43,7 @@ class Node(object):
         
         self.compute()
 
-    def backward(self,result:'Node'):
+    def backward(self,result:'Node') -> npmat:
         """Backward Propagation Diff, Calculate Jacobi Matrix
 
         Parameters
@@ -58,7 +59,8 @@ class Node(object):
                     np.zeros((result.dimension(), self.dimension())))
                 #sum
                 for child in self.get_children():
-                    self.jacobi = child.get_jacobi(self) * child.backward(result)
+                    if child.value is not None:
+                        self.jacobi += child.backward(result) * child.get_jacobi(self) 
 
         return self.jacobi
 
@@ -132,7 +134,8 @@ class Node(object):
         self.value = None
         if recursive:
             for child in self.get_children():
-                child.reset_value()
+                if child.value is not None:
+                    child.reset_value()
 
 
     
@@ -141,7 +144,8 @@ class Variable(Node):
     """
 
     def __init__(self, dim:int, init:bool = False, trainable:bool = True, **kwargs):
-        super().__init__(self, **kwargs)
+        super().__init__(**kwargs)
+        # Node.__init__(self,**kwargs)
         self.dim = dim
 
         if init:
