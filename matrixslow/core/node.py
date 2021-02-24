@@ -36,7 +36,6 @@ class Node(object):
         """Forward Propagation Value
         If some parent nodes' value is None, recursive to call parent nodes' forward method
         """        
-        
         for node in self.parents:
             if node.value is None:
                 node.forward()
@@ -71,7 +70,7 @@ class Node(object):
         """
     
     @abstractmethod
-    def get_jacobi(self,parent:'Node'):
+    def get_jacobi(self,parent:'Node') -> npmat:
         """jacobi matrix for the parent node
 
         Parameters
