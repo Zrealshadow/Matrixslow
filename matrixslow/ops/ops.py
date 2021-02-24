@@ -44,7 +44,7 @@ class MatMul(Operator):
     def get_jacobi(self, parent: 'Node') -> npmat:
         zeros = np.mat(np.zeros((self.dimension(), parent.dimension())))
         # for the first element in multiplication of matrix
-        if parent == self.parent[0]:
+        if parent == self.parents[0]:
             return fill_diagonal(zeros, self.parents[1].value.T)
         else:
             jacobi = fill_diagonal(zeros, self.parents[0].value)
