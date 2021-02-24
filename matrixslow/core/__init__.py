@@ -5,5 +5,5 @@
  * @desc : Base package for matrixslow 
 '''
 
-from matrixslow.core.graph import *
-from matrixslow.core.node import *
+from .graph import *
+from .node import *

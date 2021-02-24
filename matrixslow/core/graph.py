@@ -4,7 +4,7 @@
  * @create date 2021-02-23 11:23:14
  * @desc 
 '''
-from matrixslow.core.node import Node
+
 import os
 SEED = 2020
 
@@ -25,8 +25,8 @@ class Graph(object):
         self.font_size = 8
         self.font_family = 'arial'
         # self.
-
-    def add_node(self, node:Node) -> None:
+    # from .node import Node
+    def add_node(self, node) -> None:
         """Add Node into Computing Graph
         """
         self.nodes.append(node)
@@ -77,7 +77,7 @@ class Graph(object):
             ax = fig.add_subplot(111)
         
         ax.clear()
-        ax.axis(True)
+        ax.axis("on")
         ax.grid(True)
 
         pos = nx.spring_layout(G, seed = SEED)
@@ -107,10 +107,11 @@ class Graph(object):
         colorlist = [np.linalg.norm(n.jacobi) for n in node_jacobi_list]
         nx.draw_networkx_nodes(G, pos=pos, ax=ax, nodelist=node_jacobi_list, node_color=colorlist, cmap=cm, edgecolors=self.edgecolors, node_size=self.node_size, alpha=1.0)
 
-        nx.draw_networkx_nodes(G, pos=pos, ax=ax, nodelist=node_no_jacobi_list, node_color= self.node_color, cmap=cm, edgecolors=self.edgecolors, node_size=self.node_size, alpha=1.0, ax=ax)
+        nx.draw_networkx_nodes(G, pos=pos, ax=ax, nodelist=node_no_jacobi_list, node_color= self.node_color, cmap=cm, edgecolors=self.edgecolors, node_size=self.node_size, alpha=1.0)
     
-        nx.draw_networkx_edges(G, pos, width=self.edge_width, edge_color=self.edge_color, ax=ax)
-        nx.draw_networkx_labels(G, pos, labels=labels, font_weight=self.font_weight, font_color=self.font_color, font_size=self.font_color, font_family=self.font_family, ax=ax)
+        nx.draw_networkx_edges(G, pos=pos, ax=ax, width=self.edge_width, edge_color=self.edge_color)
+        
+        nx.draw_networkx_labels(G, pos=pos, ax=ax,labels=labels, font_weight=self.font_weight, font_color=self.font_color, font_size=self.font_size, font_family=self.font_family)
 
         if filepath is not None:
             filename = "fig"

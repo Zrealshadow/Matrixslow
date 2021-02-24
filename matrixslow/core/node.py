@@ -5,12 +5,11 @@
  * @desc 
 '''
 
-from typing import Sequence
+
 import numpy as np
 from abc import abstractmethod
-from numpy.lib.function_base import _DIMENSION_NAME
 from  numpy.matrixlib.defmatrix import matrix as npmat
-from matrixslow.core.graph import default_graph
+from .graph import default_graph
 
 class Node(object):
     """Node in computing graph

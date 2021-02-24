@@ -1,1 +1,5 @@
-from matrixslow.core.graph import default_graph
+from matrixslow import core
+from matrixslow import ops
+
+
+default_graph = core.default_graph
