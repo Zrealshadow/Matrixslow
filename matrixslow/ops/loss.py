@@ -30,4 +30,24 @@ class PerceptionLoss(LossFunction):
         diag = np.where(parent.value >= 0.0, 0.0, -1)
         return np.mat(np.diag(diag.ravel()))
 
+
+class LogLoss(LossFunction):
+    def compute(self):
+        """
+        loss = log(1 + e^{-x})
+        """
+        assert len(self.parents) == 1, "only allow one parents"
+        v = self.parents[0].value
+        self.value = np.log(1 + np.exp(-1.0 * v))
     
+    def get_jacobi(self, parent: 'Node') -> npmat:
+        v = self.parents[0].value
+        diag = - 1.0 / (1 + np.exp(v))
+        return np.mat(np.diag(diag.ravel()))
+
+
+
+
+
+
+

@@ -127,3 +127,25 @@ class Step(Operator):
     def get_children(self):
         return super().get_children()
 
+
+
+class Sigmoid(Operator):
+    """
+    Sigmoid active function
+    f(x) = 1 / ( 1 + np.exp(-x))
+    """
+
+    def compute(self):
+        assert len(self.parents) == 1, "Error in sigmoid node parents number in computing graph"
+        # using a upper limitation 1e2
+        x = self.parents[0].value
+        self.value = np.mat(1.0 / (1.0 + np.exp(np.where(-x > 1e2, 1e2, -x))))
+    
+    def get_jacobi(self, parent: 'Node') -> npmat:
+        """
+        dy/dx = y (1 - y) 
+        """
+        return np.mat(np.diag(np.multiply(self.value, 1 - self.value).A1))
+        # return super().get_jacobi(parent)
+
+
