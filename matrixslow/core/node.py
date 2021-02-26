@@ -109,7 +109,9 @@ class Node(object):
         -------
         [int]
             the size of 2-D matrix
-        """        
+        """
+        if len(self.value.shape) < 2:
+            print(self.__class__.__name__)
         return self.value.shape[0] * self.value.shape[1]
     
     def shape(self) -> tuple:
