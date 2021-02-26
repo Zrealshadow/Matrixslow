@@ -108,7 +108,7 @@ class Add(Operator):
     def compute(self):
         self.value = np.mat(np.zeros(self.parents[0].shape()))
         for parent in self.parents:
-            self.value += parent.value
+            self.value = self.value + parent.value
 
     def get_jacobi(self, parent: 'Node'):
         return np.mat(np.eye(self.dimension()))
@@ -149,3 +149,46 @@ class Sigmoid(Operator):
         # return super().get_jacobi(parent)
 
 
+class SoftMax(Operator):
+    """SoftMax
+    """
+
+    def compute(self):
+        """
+        x = np.exp(x_i) / np.sum(np.exp(x_i))
+        """
+        assert len(self.parents) == 1, "Error in SoftMax node parents number in computing graph"
+        x = self.parents[0].value.A1
+        
+        #Prevent excessive index
+        MAX_VALUE = 1e2
+        max_x = np.max(x)
+        if max_x > MAX_VALUE:
+            x = x / max_x * MAX_VALUE
+        s = np.sum(np.exp(x))
+        x = np.exp(x) / s
+        self.value = np.mat(x)
+    
+    def get_jacobi(self, parent: 'Node') -> npmat:
+        """
+        [a1, a2, a3, ... , ak]  -> [p1, p2, p3, ..., pk]
+        jacobi k * k
+        d(pi) / d(aj) = 
+          if i == j   pj * (1 - pj)
+          else  i != j  -pi*pj
+        """
+
+        v = self.value.A1
+        dim = self.dimension()
+        jacobi = np.zeros((dim,dim))
+        
+        for i in range(dim):
+            for j in range(dim):
+                if i == j:
+                    jacobi[i,j] = v[i] * (1 - v[i])
+                else:
+                    jacobi[i,j] = - v[i] * v[j]
+        
+        return np.mat(jacobi)
+
+        
