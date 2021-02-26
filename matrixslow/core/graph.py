@@ -120,6 +120,7 @@ class Graph(object):
             while os.path.exists(p):
                 filename = "fig"+ str(i)
                 p = os.path.join(filepath, filename)
+                i += 1
             plt.savefig(p)
 
 #default graph for computing
