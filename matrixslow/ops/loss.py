@@ -48,6 +48,61 @@ class LogLoss(LossFunction):
 
 
 
+class CrossEntropy(LossFunction):
+    def compute(self):
+        """
+        CrossEntropy = sum { label_i * log(p_i) }
+        the first parent node is predicted result
+        the second parent node is true labels
+        """
+        assert len(self.parents) == 2, "Error in the number of parents"
+        assert self.parents[0].shape ==  self.parents[1].shape , "Error in parents'node value shape"
+        p = self.parents[0].value
+        l = self.parents[1].value
+        self.value = np.mat(np.sum(np.multiply(l,np.log(p + 1e-10))))
+        
+    def get_jacobi(self, parent: 'Node') -> npmat:
+        p = self.parents[0].value
+        l = self.parents[1].value
+        if parent == self.parents[0]:
+            j = -1 * np.multiply(l, 1.0 / p).A1
+            return np.mat(j)
+        else:
+            # there is no need to calculate 
+            raise np.mat((-np.log(p)).T)
+
+class CrossEntropyWithSoftMax(LossFunction):
+    """Merge CrossEntropy and SoftMax into one operation node
+    """
+    def softmax(self) -> npmat:
+        a = self.parents[0].value
+        MAX_VALUE = 1e2
+        max_x = np.max(a)
+        if max_x > MAX_VALUE:
+            a = a / max_x * MAX_VALUE
+        s = np.sum(np.exp(a))
+        p = np.exp(a) / s
+
+        return p
+    def compute(self):
+        """
+        """
+        assert len(self.parents) == 2
+        # first parents is predicted node
+        # second parents is true label
+        l = self.parents[1].value
+        p = self.softmax()
+        self.value = np.mat(np.sum(np.multiply(l,np.log(p))))
+            
+    def get_jacobi(self, parent: 'Node') -> npmat:
+        p = self.softmax()
+        l = self.parents[1].value
+        jacobi = np.mat(np.zeros((self.dimension(), parent.dimension())))
+
+        if parent is self.parents[0]:
+            return (p - l).T
+        else:
+            return (-np.log(p)).T
 
 
 
