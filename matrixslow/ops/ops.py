@@ -49,8 +49,8 @@ class MatMul(Operator):
         else:
             jacobi = fill_diagonal(zeros, self.parents[0].value)
             row_sort = np.arange(self.dimension()).reshape(self.shape()[::-1]).T.ravel()
-            col_sort = np.arange(parent.dimension()).reshape(parent.shape()[::-1]).Y.ravel()
-            return jacobi[row_sort:][:col_sort]
+            col_sort = np.arange(parent.dimension()).reshape(parent.shape()[::-1]).T.ravel()
+            return jacobi[row_sort,:][:,col_sort]
         
         """
         A = [
@@ -192,3 +192,19 @@ class SoftMax(Operator):
         return np.mat(jacobi)
 
         
+class ReLU(Operator):
+    """
+    f(x) = max(x, - l * x);
+    """
+    slope = 0.1;
+    def compute(self):
+        assert len(self.parents) == 1
+        p = self.parents[0]
+        self.value = np.mat(np.where(p.value > 0, p.value , p.value * ReLU.slope))
+    
+    def get_jacobi(self, parent: 'Node') -> npmat:
+        p = self.parents[0]
+        m = np.where(p.value > 0, 1.0, ReLU.slope)
+        return np.diag(m.ravel())
+    
+
